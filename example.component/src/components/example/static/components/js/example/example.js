@@ -16,34 +16,6 @@ function extend(child, parent) {
  * Paint panel.
  */
 
-
-
-Example.PaintPanel = function (containerId) {
-    this.containerId = containerId;
-};
-
-Example.PaintPanel.prototype = {
-
-    init: function () {
-        this._initMarkup(this.containerId);
-    },
-
-    _initMarkup: function (containerId) {
-        var container = $('#' + containerId);
-	container.append('<script name="JavaScript">variables();</script>');
-	container.append('<h1 align="center">Крестики-нолики</h1>');
-	container.append('<form><p align="center"><input type="button" name="whoseturn" value="Ход: Игрок 1"> <br><br></p><div align="center"><center><table border="0"><tr><td><input type="button" name="b1" value=" " onclick="change_b1(this.form)"> </td><td><input type="button" name="b2" value=" " onclick="change_b2(this.form)"></td><td><input type="button" name="b3" value=" " onclick="change_b3(this.form)"> </td></tr><tr><td><input type="button" name="b4" value=" " onclick="change_b4(this.form)"> </td><td><input type="button" name="b5" value=" " onclick="change_b5(this.form)"> </td><td><input type="button" name="b6" value=" " onclick="change_b6(this.form)"> </td></tr><tr><td><input type="button" name="b7" value=" " onclick="change_b7(this.form)"> </td><td><input type="button" name="b8" value=" " onclick="change_b8(this.form)"> </td><td><input type="button" name="b9" value=" " onclick="change_b9(this.form)"> </td></tr></table></center></div><p align="center"><br><input type="button" value="Новая игра" onclick="history.go(0)"> </p></form>');
-
-    }
-};
-
-
-
-
-/* --- src/example-component.js --- */
-/**
- * Example component.
- */
 //My code
 
 function variables(){
@@ -164,6 +136,7 @@ changing(clicked) ;
 t = turnchange(t) ;
 form.b1.value = xo;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb1');
 win();
 return;
 }
@@ -173,6 +146,7 @@ changing(clicked) ;
 form.b2.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb2');
 win();
 return;
 }
@@ -182,6 +156,7 @@ changing(clicked) ;
 form.b3.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb3');
 win();
 return;
 }
@@ -191,6 +166,7 @@ changing(clicked) ;
 form.b4.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb4');
 win();
 return;
 }
@@ -200,6 +176,7 @@ changing(clicked) ;
 form.b5.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb5');
 win();
 return;
 }
@@ -209,6 +186,7 @@ changing(clicked) ;
 form.b6.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb6');
 win();
 return;
 }
@@ -218,6 +196,7 @@ changing(clicked) ;
 form.b7.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb7');
 win();
 return;
 }
@@ -227,6 +206,7 @@ changing(clicked) ;
 form.b8.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb8');
 win();
 return;
 }
@@ -236,10 +216,157 @@ changing(clicked) ;
 form.b9.value = xo;
 t = turnchange(t) ;
 form.whoseturn.value = whogoesnow
+generateNodesValue('idb9');
 win();
 return;
 }
 //end
+
+  function generateNodesValue (addr_id) {
+		var main_menu_addr, nrel_main_idtf_addr, lang_en_addr;
+		// Resolve sc-addr. Get sc-addr of ui_main_menu node
+		SCWeb.core.Server.resolveScAddr([addr_id, 'concept_quantity', 'nrel_value'], function (keynodes) {
+			main_menu_addr = keynodes[addr_id];
+			nrel_main_idtf_addr = keynodes['nrel_value'];
+			lang_en_addr = keynodes['concept_quantity'];
+
+			window.sctpClient.create_link().done(function (generatedLink) {
+				window.sctpClient.set_link_content(generatedLink, document.getElementById(addr_id).value);
+				window.sctpClient.create_arc(sc_type_arc_common | sc_type_const, main_menu_addr, generatedLink).done(function (generatedCommonArc) {
+					window.sctpClient.create_arc(sc_type_arc_pos_const_perm, nrel_main_idtf_addr, generatedCommonArc);
+				});
+				window.sctpClient.create_arc(sc_type_arc_pos_const_perm, lang_en_addr, generatedLink);
+			});
+					
+		});
+	}
+
+Example.PaintPanel = function (containerId) {
+    this.containerId = containerId;
+};
+
+Example.PaintPanel.prototype = {
+
+
+    init: function () {
+        this._initMarkup(this.containerId);
+    },
+
+    _initMarkup: function (containerId) {
+        var container = $('#' + containerId);
+	 var self = this;
+
+	container.append('<script name="JavaScript">variables();</script>');
+	container.append('<h1 align="center">Крестики-нолики</h1>');
+	container.append('<form>'+
+	'<p align="center"><input type="button" name="whoseturn" value="Ход: Игрок 1"><br><br></p><div align="center">'+
+	'<center><table border="0"><tr><td>'+
+	'<input id="idb1" type="button" name="b1" value=" " onclick="change_b1(this.form)"> </td><td>'+
+	'<input id="idb2" type="button" name="b2" value=" " onclick="change_b2(this.form)"></td><td>'+
+	'<input id="idb3" type="button" name="b3" value=" " onclick="change_b3(this.form)"> </td></tr><tr><td>'+
+	'<input id="idb4" type="button" name="b4" value=" " onclick="change_b4(this.form)"> </td><td>'+
+	'<input id="idb5" type="button" name="b5" value=" " onclick="change_b5(this.form)"> </td><td>'+
+	'<input id="idb6" type="button" name="b6" value=" " onclick="change_b6(this.form)"> </td></tr><tr><td>'+
+	'<input id="idb7" type="button" name="b7" value=" " onclick="change_b7(this.form)"> </td><td>'+
+	'<input id="idb8" type="button" name="b8" value=" " onclick="change_b8(this.form)"> </td><td>'+
+	'<input id="idb9" type="button" name="b9" value=" " onclick="change_b9(this.form)"> </td></tr></table></center>'+
+	'</div><p align="center"><br><button id="newButton" type="button">Информация об игре</button><br></p></form>');
+
+        $('#newButton').click(function () {
+			self._showMainMenuNode();
+		});
+    },
+
+    /* Call agent of searching semantic neighborhood,
+	send ui_main_menu node as parameter and add it in web window history
+	*/
+	_showMainMenuNode: function () {
+		var addr;
+		// Resolve sc-addr. Get sc-addr of ui_main_menu node
+		SCWeb.core.Server.resolveScAddr(['main_tic_tac'], function (keynodes) {
+			addr = keynodes['main_tic_tac'];
+			// Resolve sc-addr of ui_menu_view_full_semantic_neighborhood node
+			SCWeb.core.Server.resolveScAddr(["ui_menu_view_full_semantic_neighborhood"],
+			function (data) {
+				// Get command of ui_menu_view_full_semantic_neighborhood
+				var cmd = data["ui_menu_view_full_semantic_neighborhood"];
+				// Simulate click on ui_menu_view_full_semantic_neighborhood button
+				SCWeb.core.Main.doCommand(cmd,
+				[addr], function (result) {
+					// waiting for result
+					if (result.question != undefined) {
+						// append in history
+						SCWeb.ui.WindowManager.appendHistoryItem(result.question);
+					}
+				});
+			});
+		});
+	},
+
+	_findMainIdentifier: function () {
+		console.log("inFind");
+		var main_menu_addr, nrel_main_idtf_addr;
+		// Resolve sc-addrs.
+		SCWeb.core.Server.resolveScAddr(['ui_main_menu', 'nrel_main_idtf'], function (keynodes) {
+			main_menu_addr = keynodes['ui_main_menu'];
+			nrel_main_idtf_addr = keynodes['nrel_main_idtf'];
+			console.log(main_menu_addr);
+			console.log(nrel_main_idtf_addr);
+			// Resolve sc-addr of ui_menu_view_full_semantic_neighborhood node
+			window.sctpClient.iterate_elements(SctpIteratorType.SCTP_ITERATOR_5F_A_A_A_F, [
+ 				main_menu_addr,
+ 				sc_type_arc_common | sc_type_const,
+ 				sc_type_link,
+ 				sc_type_arc_pos_const_perm,
+ 				nrel_main_idtf_addr]).
+			done(function(identifiers){	 
+				 window.sctpClient.get_link_content(identifiers[0][2],'string').done(function(content){
+				 	alert('Главный идентификатор: ' + content);
+				 });			
+			});
+		});
+    },
+
+    _generateNodes: function () {
+		var main_menu_addr, nrel_main_idtf_addr, lang_en_addr;
+		// Resolve sc-addr. Get sc-addr of ui_main_menu node
+		SCWeb.core.Server.resolveScAddr(['idb1', 'concept_quantity', 'nrel_value'], function (keynodes) {
+			main_menu_addr = keynodes['idb1'];
+			nrel_main_idtf_addr = keynodes['nrel_value'];
+			lang_en_addr = keynodes['concept_quantity'];
+
+			window.sctpClient.create_link().done(function (generatedLink) {
+				window.sctpClient.set_link_content(generatedLink, document.getElementById("idb1").value);
+				window.sctpClient.create_arc(sc_type_arc_common | sc_type_const, main_menu_addr, generatedLink).done(function (generatedCommonArc) {
+					window.sctpClient.create_arc(sc_type_arc_pos_const_perm, nrel_main_idtf_addr, generatedCommonArc);
+				});
+				window.sctpClient.create_arc(sc_type_arc_pos_const_perm, lang_en_addr, generatedLink);
+			});
+			// $('#generateNodes').attr("sc_addr", main_menu_addr);
+			// SCWeb.core.Server.resolveScAddr(["ui_menu_view_full_semantic_neighborhood"],
+			// function (data) {
+			// 	// Get command of ui_menu_view_full_semantic_neighborhood
+			// 	var cmd = data["ui_menu_view_full_semantic_neighborhood"];
+			// 	// Simulate click on ui_menu_view_full_semantic_neighborhood button
+			// 	SCWeb.core.Main.doCommand(cmd,
+			// 	[main_menu_addr], function (result) {
+			// 		// waiting for result
+			// 		if (result.question != undefined) {
+			// 			// append in history
+			// 			SCWeb.ui.WindowManager.appendHistoryItem(result.question);
+			// 		}
+			// 	});
+			// });			
+		});
+	}
+};
+
+
+/* --- src/example-component.js --- */
+/**
+ * Example component.
+ */
+
 Example.DrawComponent = {
     ext_lang: 'tic_tac_toe',
     formats: ['format_example_json'],
